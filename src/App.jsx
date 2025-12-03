@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState } from "react";
 import {
   LayoutDashboard,
@@ -18,11 +19,11 @@ import {
   MessageSquare
 } from "lucide-react";
 
-// Import your Dashboard component
+// Components
 import Dashboard from './components/Dashboard';
-import ExportCSVButton from './components/ExportCSVButton';  // <-- Import CSV button here
+import ExportCSVButton from './components/ExportCSVButton';
 
-/* ------------------ Mock data ------------------ */
+/* ------------------ Mock Leads Data ------------------ */
 const MOCK_LEADS_POOL = [
   {
     id: 1,
@@ -99,31 +100,7 @@ const MOCK_LEADS_POOL = [
   }
 ];
 
-/* ------------------ App component ------------------ */
-export default function App() {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [leads, setLeads] = useState(MOCK_LEADS_POOL);
-
-  return (
-    <div>
-      <h1>AI-Powered Artist Promotion Assistant</h1>
-
-      {activeTab === "dashboard" && (
-        <div className="dashboard-controls">
-          <ExportCSVButton leads={leads} />
-        </div>
-      )}
-
-      <Dashboard />
-    </div>
-  );
-}
-
-
-/* ----------------------------------------------------------------------------------
-   SMALL REUSABLE COMPONENTS
----------------------------------------------------------------------------------- */
-
+/* ------------------ Small Reusable Components ------------------ */
 const ScoreBadge = ({ score }) => {
   let cls = "badge-gray";
   if (score >= 80) cls = "badge-green";
@@ -485,6 +462,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 
