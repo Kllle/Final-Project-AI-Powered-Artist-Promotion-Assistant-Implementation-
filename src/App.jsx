@@ -19,12 +19,13 @@ import {
   MessageSquare
 } from "lucide-react";
 
+// Import your components & utilities
 import Dashboard from './components/Dashboard';
 import ExportCSVButton from './components/ExportCSVButton';
 import { calculateScore } from './utils/score';
 import { estimateROI } from './utils/roi';
 
-/* ------------------ Mock Data ------------------ */
+/* ------------------ Mock data ------------------ */
 const MOCK_LEADS_POOL = [
   {
     id: 1,
@@ -101,7 +102,39 @@ const MOCK_LEADS_POOL = [
   }
 ];
 
-/* ------------------ App Component ------------------ */
+/* ------------------ Small Reusable Components ------------------ */
+const ScoreBadge = ({ score }) => {
+  let cls = "badge-gray";
+  if (score >= 80) cls = "badge-green";
+  else if (score >= 50) cls = "badge-yellow";
+  return <span className={`score-badge ${cls}`}>{score}</span>;
+};
+
+const PlatformIcon = ({ platform }) => {
+  if (platform === "instagram") return <Instagram className="w-4 h-4" />;
+  if (platform === "linkedin") return <Linkedin className="w-4 h-4" />;
+  return <MessageSquare className="w-4 h-4" />;
+};
+
+const MetricCard = ({ title, value, subtext, Icon, trend }) => (
+  <div className="card metric-card">
+    <div className="icon-wrap">
+      <Icon className="w-6 h-6" />
+    </div>
+    <div className="card-body">
+      <p className="muted">{title}</p>
+      <h3 className="metric-value">{value}</h3>
+      {subtext && (
+        <div className="flex gap-2 items-center">
+          <span className="trend">{trend}</span>
+          <span className="muted-sm">{subtext}</span>
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+/* ------------------ Main App Component ------------------ */
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [leads, setLeads] = useState(
@@ -120,6 +153,11 @@ export default function App() {
   const [brandVoice, setBrandVoice] = useState("Professional yet Creative");
   const [autoReplyThreshold] = useState(90);
 
+  // Track approved/dismissed leads for analytics
+  const [approvedLeads, setApprovedLeads] = useState([]);
+  const [dismissedLeads, setDismissedLeads] = useState([]);
+
+  /* ------------------ Utility Functions ------------------ */
   const notify = (msg) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 2600);
@@ -127,11 +165,7 @@ export default function App() {
 
   const fetchNewLead = () => {
     const idx = Math.floor(Math.random() * MOCK_LEADS_POOL.length);
-    const newLead = {
-      ...MOCK_LEADS_POOL[idx],
-      id: Date.now(),
-      timestamp: "Just now"
-    };
+    const newLead = { ...MOCK_LEADS_POOL[idx], id: Date.now(), timestamp: "Just now" };
     setLeads((prev) => [newLead, ...prev]);
     notify(`New lead from ${newLead.platform}`);
   };
@@ -143,52 +177,27 @@ export default function App() {
   };
 
   const handleApprove = (id) => {
-    setLeads((prev) => prev.filter((l) => l.id !== id));
+    const lead = leads.find(l => l.id === id);
+    setApprovedLeads(prev => [...prev, lead]);
+    setLeads(prev => prev.filter(l => l.id !== id));
     setSelectedLead(null);
     notify("Approved & queued for posting");
   };
 
   const handleDismiss = (id) => {
-    setLeads((prev) => prev.filter((l) => l.id !== id));
+    const lead = leads.find(l => l.id === id);
+    setDismissedLeads(prev => [...prev, lead]);
+    setLeads(prev => prev.filter(l => l.id !== id));
     setSelectedLead(null);
   };
 
   const filteredLeads = () => {
     if (filter === "all") return leads;
-    if (filter === "high-value") return leads.filter((l) => l.opportunityScore >= 80);
-    return leads.filter((l) => l.platform === filter);
+    if (filter === "high-value") return leads.filter(l => l.opportunityScore >= 80);
+    return leads.filter(l => l.platform === filter);
   };
 
-  /* ------------------ Small Reusable Components ------------------ */
-  const ScoreBadge = ({ score }) => {
-    let cls = "badge-gray";
-    if (score >= 80) cls = "badge-green";
-    else if (score >= 50) cls = "badge-yellow";
-    return <span className={`score-badge ${cls}`}>{score}</span>;
-  };
-
-  const PlatformIcon = ({ platform }) => {
-    if (platform === "instagram") return <Instagram className="w-4 h-4" />;
-    if (platform === "linkedin") return <Linkedin className="w-4 h-4" />;
-    return <MessageSquare className="w-4 h-4" />;
-  };
-
-  const MetricCard = ({ title, value, subtext, Icon, trend }) => (
-    <div className="card metric-card">
-      <div className="icon-wrap">
-        <Icon className="w-6 h-6" />
-      </div>
-      <div className="card-body">
-        <p className="muted">{title}</p>
-        <h3 className="metric-value">{value}</h3>
-        <div className="flex gap-2 items-center">
-          <span className="trend">{trend}</span>
-          <span className="muted-sm">{subtext}</span>
-        </div>
-      </div>
-    </div>
-  );
-
+  /* ------------------ Render ------------------ */
   return (
     <div className="app-root">
       {notification && (
@@ -198,7 +207,7 @@ export default function App() {
         </div>
       )}
 
-      {/* SIDEBAR */}
+      {/* SIDEBAR -------------------------------------------------------- */}
       <aside className="sidebar">
         <div className="brand">
           <Sparkles className="w-5 h-5" />
@@ -215,18 +224,21 @@ export default function App() {
           >
             <LayoutDashboard className="w-4 h-4" /> Dashboard
           </button>
+
           <button
             className={`nav-btn ${activeTab === "analytics" ? "active" : ""}`}
             onClick={() => setActiveTab("analytics")}
           >
             <BarChart3 className="w-4 h-4" /> Analytics
           </button>
+
           <button
             className={`nav-btn ${activeTab === "history" ? "active" : ""}`}
             onClick={() => setActiveTab("history")}
           >
             <History className="w-4 h-4" /> History
           </button>
+
           <button
             className={`nav-btn ${activeTab === "settings" ? "active" : ""}`}
             onClick={() => setActiveTab("settings")}
@@ -236,15 +248,14 @@ export default function App() {
         </nav>
       </aside>
 
-      {/* MAIN */}
+      {/* MAIN ------------------------------------------------------------ */}
       <main className="main">
         <header className="main-header">
           <div>
             <h1 className="title">{activeTab.replace("-", " ")}</h1>
             <p className="subtitle">
-              {activeTab === "dashboard" &&
-                "Review & approve AI-suggested replies for real leads"}
-              {activeTab === "analytics" && "Performance overview & ROI metrics"}
+              {activeTab === "dashboard" && "Review & approve AI-suggested replies for real leads"}
+              {activeTab === "analytics" && "Performance overview & KPI metrics"}
               {activeTab === "history" && "Engagement log & response history"}
               {activeTab === "settings" && "Control brand voice & automation behavior"}
             </p>
@@ -258,47 +269,56 @@ export default function App() {
           </div>
         </header>
 
-        {/* DASHBOARD TAB */}
+        {/* DASHBOARD TAB ------------------------------------------------ */}
         {activeTab === "dashboard" && (
-          <section className="dashboard-grid">
-            <Dashboard leads={filteredLeads()} />
-            <div style={{ marginTop: "10px" }}>
-              <ExportCSVButton leads={filteredLeads()} />
-            </div>
-          </section>
+          <Dashboard
+            leads={filteredLeads()}
+            openLead={openLead}
+            selectedLead={selectedLead}
+            handleApprove={handleApprove}
+            handleDismiss={handleDismiss}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            editedResponse={editedResponse}
+            setEditedResponse={setEditedResponse}
+          />
         )}
 
-        {/* ANALYTICS TAB */}
+        {/* ANALYTICS TAB ------------------------------------------------ */}
         {activeTab === "analytics" && (
           <section className="analytics">
+            <h2>Performance Analytics</h2>
             <div className="metrics">
               <MetricCard
                 Icon={TrendingUp}
-                title="Engagement Growth"
-                value="+28%"
-                subtext="vs last month"
-                trend="↑ 4.2%"
-              />
-              <MetricCard
-                Icon={Clock}
-                title="Hours Saved"
-                value="12h"
-                subtext="manual outreach reduced"
-                trend="↑ 40%"
+                title="Total Leads Processed"
+                value={approvedLeads.length + dismissedLeads.length}
+                subtext="Approved + Dismissed"
               />
               <MetricCard
                 Icon={DollarSign}
-                title="Projected Revenue"
-                value="$12.4k"
-                subtext="from 142 leads"
-                trend="↑ 15%"
+                title="Estimated Revenue"
+                value={`$${approvedLeads.reduce((sum, l) => sum + l.estimatedROI, 0)}`}
+                subtext="From approved leads"
+              />
+              <MetricCard
+                Icon={CheckCircle}
+                title="Approval Rate"
+                value={`${((approvedLeads.length / (approvedLeads.length + dismissedLeads.length || 1)) * 100).toFixed(1)}%`}
+                subtext="CTR / Leads Approved"
+              />
+              <MetricCard
+                Icon={LayoutDashboard}
+                title="High-Value Opportunities"
+                value={leads.filter(l => l.opportunityScore >= 80).length}
+                subtext="Score >= 80"
               />
             </div>
             <div className="charts muted-sm">Charts coming soon…</div>
           </section>
         )}
 
-        {/* HISTORY TAB */}
+        {/* HISTORY TAB -------------------------------------------------- */}
         {activeTab === "history" && (
           <section className="history">
             <h2>Engagement Log</h2>
@@ -306,7 +326,7 @@ export default function App() {
           </section>
         )}
 
-        {/* SETTINGS TAB */}
+        {/* SETTINGS TAB ------------------------------------------------- */}
         {activeTab === "settings" && (
           <section className="settings">
             <div className="settings-card">
@@ -323,9 +343,7 @@ export default function App() {
                 <option>High-End / Luxury</option>
               </select>
 
-              <label className="muted-sm">
-                Auto-draft Threshold ({autoReplyThreshold}%)
-              </label>
+              <label className="muted-sm">Auto-draft Threshold ({autoReplyThreshold}%)</label>
               <input
                 type="range"
                 min="50"
