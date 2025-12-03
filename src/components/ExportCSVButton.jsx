@@ -1,4 +1,5 @@
-// src/components/ExportCSVButton.js
+// src/components/ExportCSVButton.jsx
+import React from "react";
 import { saveAs } from 'file-saver';
 
 export default function ExportCSVButton({ leads }) {
