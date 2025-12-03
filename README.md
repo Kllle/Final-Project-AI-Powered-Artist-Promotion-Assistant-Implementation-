@@ -55,9 +55,8 @@ Simulation Engine: Custom JavaScript mimicking GPT-4 and Social Graph API output
 💻 Setup & Installation
 Prerequisites
 
-Node.js (v14.0.0+)
-
-npm or yarn
+- Node.js (v14.0.0+)
+- npm or yarn
 
 1. Clone the Repository
 git clone https://github.com/your-username/artist-promotion-assistant.git
@@ -65,29 +64,24 @@ cd artist-promotion-assistant
 
 2. Install Dependencies
 npm install lucide-react
-# If you're also using Tailwind:
-# npm install -D tailwindcss postcss autoprefixer
+(If you're also using Tailwind: npm install -D tailwindcss postcss autoprefixer)
 
 3. Run the Application
 npm start
-# OR, if using Vite:
+(OR, if using Vite:)
 npm run dev
 
 4. Open in Browser
-
 Go to:
-
-http://localhost:3000
-
-
-(or whichever port appears in your terminal)
+http://localhost:3000  (or whichever port appears in your terminal)
 
 📂 Project Structure
-/src
-├── components/       # Reusable UI components (MetricCard, PlatformIcon)
-├── data/             # Mock API response data (MOCK_LEADS_POOL)
-├── App.js            # Main application logic + state management
-└── index.css         # Tailwind directives + global styles
+
+- /src
+- /src/components — Reusable UI components (MetricCard, PlatformIcon)
+- /src/data — Mock data simulating API responses (MOCK_LEADS_POOL)
+- /src/App.js — Main application logic and state management
+- /src/index.css — Tailwind directives and global styles
 
 🛡 Ethical Compliance & Safety
 Data Privacy
