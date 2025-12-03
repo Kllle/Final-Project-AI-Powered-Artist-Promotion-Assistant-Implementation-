@@ -4,7 +4,7 @@ import { calculateScore } from '../utils/score';
 import { estimateROI } from '../utils/roi';
 import { generateResponse } from '../services/aiSimulator';
 import { trackEvent } from '../services/analytics';
-import ExportCSVButton from './ExportCSVButton';
+import ExportCSVButton from './ExportCSVButton.jsx';
 
 const sampleLeads = [
   { id: 1, name: 'Alice', platform: 'Instagram', engagement: 80, reach: 500 },
