@@ -1,103 +1,104 @@
 AI-Powered Artist Promotion Assistant (POC)
 
 Client: Joe Fleishman
-
 Developed By: CFD AI Consulting Group
-
 Version: 1.0.0 (Proof of Concept)
-
 Date: November 2025
 
 📌 Project Overview
 
-The AI-Powered Artist Promotion Assistant is a React-based application designed to help artists ethically identify, analyze, and engage with potential customers on social media platforms (Instagram & LinkedIn).
+The AI-Powered Artist Promotion Assistant is a React-based application designed to help artists ethically identify, analyze, and engage with potential customers on Instagram and LinkedIn.
 
 This Proof of Concept (POC) demonstrates how Artificial Intelligence can be used to:
 
-Monitor live social feeds for keywords relevant to the artist's niche.
+Monitor live social feeds for keywords relevant to the artist’s niche
 
-Analyze the "Opportunity Score" of a comment to determine commercial intent.
+Analyze the Opportunity Score of comments to determine commercial intent
 
-Draft brand-aligned responses automatically.
+Draft brand-aligned responses automatically
 
-Track business ROI and engagement metrics.
+Track business ROI and engagement metrics
 
-Ethical Note: This system implements a "Human-in-the-Loop" workflow. No AI-generated content is posted without explicit artist approval, ensuring compliance with platform Terms of Service and maintaining authenticity.
+Ethical Note:
+This system uses a Human-in-the-Loop workflow. No AI-generated content is posted without explicit artist approval, ensuring authenticity and platform compliance.
 
 🚀 Key Features
 
-Live Monitoring Feed: Simulates real-time data ingestion from Instagram and LinkedIn APIs.
+Live Monitoring Feed
+Simulated real-time ingestion from Instagram & LinkedIn APIs.
 
-Smart Opportunity Scoring: Algorithms rank leads (0-100) based on purchasing intent and persona fit.
+Smart Opportunity Scoring
+Algorithm ranks leads (0–100) based on purchasing intent and persona fit.
 
-AI Persona Tagging: Automatically classifies users as Interior Designers, Corporate Buyers, Art Enthusiasts, etc.
+AI Persona Tagging
+Classifies users as Interior Designers, Corporate Buyers, Art Enthusiasts, etc.
 
-Artist Approval Dashboard: A unified interface to edit, approve, or reject AI-drafted responses.
+Artist Approval Dashboard
+Edit, approve, or reject AI-drafted responses.
 
-ROI Analytics: Tracks engagement growth, hours saved, and projected revenue.
+ROI Analytics
+Tracks engagement growth, hours saved, and projected revenue.
 
-Brand Voice Configuration: Adjustable settings for response tone (Professional, Casual, Luxury).
+Brand Voice Configuration
+Adjustable responses: Professional, Casual, Luxury, and more.
 
 🛠 Tech Stack
 
-Frontend: React.js (Vite/Create React App)
+Frontend: React.js (Vite or Create React App)
 
 Styling: Tailwind CSS
 
 Icons: Lucide React
 
-Simulation Engine: Custom JavaScript logic simulating OpenAI GPT-4 & Social Graph API responses.
+Simulation Engine: Custom JavaScript mimicking GPT-4 and Social Graph API output
 
 💻 Setup & Installation
-
-To run this POC locally, follow these steps:
-
 Prerequisites
 
-Node.js (v14.0.0 or higher)
+Node.js (v14.0.0+)
 
 npm or yarn
 
-Installation
-
-Clone the repository
-
-git clone [https://github.com/your-username/artist-promotion-assistant.git](https://github.com/your-username/artist-promotion-assistant.git)
+1. Clone the Repository
+git clone https://github.com/your-username/artist-promotion-assistant.git
 cd artist-promotion-assistant
 
-
-Install Dependencies
-
+2. Install Dependencies
 npm install lucide-react
-# If using a specific UI library or Tailwind, ensure those are installed:
+# If you're also using Tailwind:
 # npm install -D tailwindcss postcss autoprefixer
 
-
-Run the Application
-
+3. Run the Application
 npm start
-# OR if using Vite
+# OR, if using Vite:
 npm run dev
 
+4. Open in Browser
 
-Open in Browser
-Navigate to http://localhost:3000 (or the port shown in your terminal).
+Go to:
+
+http://localhost:3000
+
+
+(or whichever port appears in your terminal)
 
 📂 Project Structure
-
 /src
 ├── components/       # Reusable UI components (MetricCard, PlatformIcon)
-├── data/            # Mock data simulating API responses (MOCK_LEADS_POOL)
-├── App.js           # Main application logic and state management
-└── index.css        # Tailwind directives and global styles
-
+├── data/             # Mock API response data (MOCK_LEADS_POOL)
+├── App.js            # Main application logic + state management
+└── index.css         # Tailwind directives + global styles
 
 🛡 Ethical Compliance & Safety
+Data Privacy
 
-Data Privacy: This POC processes public data only. In a production environment, data would be encrypted via AWS KMS.
+This POC processes public data only.
+Production environments would require secure storage (e.g., AWS KMS).
 
-Bias Mitigation: The Opportunity Scoring algorithm favors explicit keywords over user demographics to prevent profiling bias.
+Bias Mitigation
 
-Platform Compliance: Designed to respect API rate limits (simulated via the "Fetch" cooldown).
+Opportunity scoring prioritizes explicit keywords rather than demographic characteristics to minimize profiling bias.
 
-📧 Contact
+Platform Compliance
+
+Designed to respect API rate limits and includes a simulated Fetch Cooldown mechanism.
