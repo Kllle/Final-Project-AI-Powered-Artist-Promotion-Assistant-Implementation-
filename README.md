@@ -30,39 +30,27 @@ This version is a working Proof of Concept (POC) showcasing:
 - AI-powered ranking logic (simulated)
 
 ✅ Key Features
-- ✅ Live Monitoring Simulation
+✅ Live Monitoring Simulation
 Simulates tracking across multiple digital platforms (Instagram, TikTok, YouTube).
-- ✅ AI Opportunity Scoring System
+✅ AI Opportunity Scoring System
 Each lead receives a dynamically generated AI score based on:
 - Engagement level
 - Follower count
 - ontent type
 - Platform type
-
 ✅ Approval & Denial Workflow
 Users can:
-
-Approve leads for outreach
-
-Dismiss irrelevant leads
-
-Track decision history
-
+- Approve leads for outreach
+- Dismiss irrelevant leads
+- Track decision history
 ✅ Performance Analytics Dashboard
-
-Weekly lead activity
-
-Total approvals vs dismissals
-
-Conversion performance (mock)
-
-Growth trend indicators
-
+- Weekly lead activity
+- Total approvals vs dismissals
+- Conversion performance (mock)
+- Growth trend indicators
 ✅ Mock Data Pools
-
-Expanded mock lead database
-
-Realistic artist engagement scenarios
+- Expanded mock lead database
+- Realistic artist engagement scenarios
 
 🧠 AI Logic (Simulated)
 
