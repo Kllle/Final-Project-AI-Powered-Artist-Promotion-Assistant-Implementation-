@@ -2,9 +2,12 @@
 import React from 'react';
 import { Edit3, XCircle, CheckCircle, User, LayoutDashboard } from 'lucide-react';
 import ExportCSVButton from './ExportCSVButton.jsx';
+import { generateResponse } from '../services/aiSimulator';
+import { trackEvent } from '../services/analytics';
 
 export default function Dashboard({
   leads,
+  setLeads,
   openLead,
   selectedLead,
   handleApprove,
@@ -14,6 +17,34 @@ export default function Dashboard({
   editedResponse,
   setEditedResponse
 }) {
+
+  const handleGenerateResponse = async (leadId) => {
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead) return;
+
+    const response = await generateResponse(lead, { tone: 'friendly', style: 'concise' });
+
+    setLeads(prevLeads =>
+      prevLeads.map(l =>
+        l.id === leadId ? { ...l, suggestedResponse: response } : l
+      )
+    );
+  };
+
+  const approveLead = (leadId) => {
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead) return;
+    trackEvent('lead_approved', { leadId: lead.id, score: lead.opportunityScore });
+    handleApprove(leadId);
+  };
+
+  const dismissLead = (leadId) => {
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead) return;
+    trackEvent('lead_dismissed', { leadId: lead.id });
+    handleDismiss(leadId);
+  };
+
   return (
     <section className="dashboard-grid">
       {/* FEED ----------------------------------------------------- */}
@@ -52,6 +83,12 @@ export default function Dashboard({
               <div className="lead-footer muted-sm">
                 <User className="w-3 h-3 inline-block mr-1" />
                 {lead.persona}
+              </div>
+
+              <div className="lead-actions mt-2">
+                <button onClick={() => handleGenerateResponse(lead.id)}>Suggest Response</button>
+                <button onClick={() => approveLead(lead.id)}>Approve</button>
+                <button onClick={() => dismissLead(lead.id)}>Dismiss</button>
               </div>
             </article>
           ))}
@@ -100,14 +137,14 @@ export default function Dashboard({
                   className="response-editor"
                 />
               ) : (
-                <div className="response-box">{editedResponse}</div>
+                <div className="response-box">{selectedLead.suggestedResponse || selectedLead.aiDraft}</div>
               )}
             </div>
 
             <div className="detail-actions">
               <button
                 className="btn-outline"
-                onClick={() => handleDismiss(selectedLead.id)}
+                onClick={() => dismissLead(selectedLead.id)}
               >
                 <XCircle /> Dismiss
               </button>
@@ -121,7 +158,7 @@ export default function Dashboard({
 
                 <button
                   className="btn-primary"
-                  onClick={() => handleApprove(selectedLead.id)}
+                  onClick={() => approveLead(selectedLead.id)}
                 >
                   <CheckCircle /> {editMode ? "Save & Approve" : "Approve & Post"}
                 </button>
