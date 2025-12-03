@@ -18,6 +18,25 @@ import {
   MessageSquare
 } from "lucide-react";
 
+
+// Import your Dashboard component
+import Dashboard from './components/Dashboard';
+
+function App() {
+  return (
+    <div>
+      <h1>AI-Powered Artist Promotion Assistant</h1>
+      {/* Render the dashboard here */}
+      <Dashboard />
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
 /* ----------------------------------------------------------------------------------
    MOCK DATA — INCLUDED IN FULL SO YOU CAN COPY/PASTE THIS FILE AS-IS
 ---------------------------------------------------------------------------------- */
@@ -463,3 +482,4 @@ export default function App() {
     </div>
   );
 }
+
