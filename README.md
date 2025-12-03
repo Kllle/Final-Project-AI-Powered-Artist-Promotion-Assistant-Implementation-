@@ -1,98 +1,161 @@
-AI-Powered Artist Promotion Assistant (POC)
+🎵 AI-Powered Artist Promotion Assistant (POC)
 
+Course: ITAI 4373
+Term: Fall 2025
+Project Type: Functional Proof of Concept (POC)
+Student: Kaylee Auguillard
 Client: Joe Fleishman
-Developed By: CFD AI Consulting Group
-Version: 1.0.0 (Proof of Concept)
-Date: November 2025
+
+🔗 Live Demo (Vercel Deployment)
+
+You can view the live Proof of Concept (POC) application here:
+
+👉 https://final-project-ai-powered-a-git-73c8ee-kaylees-projects-3076c988.vercel.app
+
+This deployed version demonstrates:
+- Mock live platform monitoring
+- AI opportunity scoring simulation
+- Lead management approval/denial workflow
+- Performance analytics with mock metrics
 
 📌 Project Overview
 
-The AI-Powered Artist Promotion Assistant is a React-based application designed to help artists ethically identify, analyze, and engage with potential customers on Instagram and LinkedIn.
+The AI-Powered Artist Promotion Assistant is a simulated marketing intelligence platform designed to help artists and managers identify promotion opportunities using AI-driven analysis. The system monitors multiple platforms, evaluates engagement opportunities, assigns AI scores, and tracks performance analytics through a centralized dashboard.
 
-This Proof of Concept (POC) demonstrates how Artificial Intelligence can be used to:
+This version is a working Proof of Concept (POC) showcasing:
 
-Monitor live social feeds for keywords relevant to the artist’s niche
+- Platform monitoring simulation
+- Lead scoring and approval workflow
+- Performance analytics with mock data
+- AI-powered ranking logic (simulated)
 
-Analyze the Opportunity Score of comments to determine commercial intent
+✅ Key Features
+- ✅ Live Monitoring Simulation
+Simulates tracking across multiple digital platforms (Instagram, TikTok, YouTube).
+- ✅ AI Opportunity Scoring System
+Each lead receives a dynamically generated AI score based on:
+- Engagement level
+- Follower count
+- ontent type
+- Platform type
 
-Draft brand-aligned responses automatically
+✅ Approval & Denial Workflow
+Users can:
 
-Track business ROI and engagement metrics
+Approve leads for outreach
 
-Ethical Note:
-This system uses a Human-in-the-Loop workflow. No AI-generated content is posted without explicit artist approval, ensuring authenticity and platform compliance.
+Dismiss irrelevant leads
 
-🚀 Key Features
+Track decision history
 
-Live Monitoring Feed
-Simulated real-time ingestion from Instagram & LinkedIn APIs.
+✅ Performance Analytics Dashboard
 
-Smart Opportunity Scoring
-Algorithm ranks leads (0–100) based on purchasing intent and persona fit.
+Weekly lead activity
 
-AI Persona Tagging
-Classifies users as Interior Designers, Corporate Buyers, Art Enthusiasts, etc.
+Total approvals vs dismissals
 
-Artist Approval Dashboard
-Edit, approve, or reject AI-drafted responses.
+Conversion performance (mock)
 
-ROI Analytics
-Tracks engagement growth, hours saved, and projected revenue.
+Growth trend indicators
 
-Brand Voice Configuration
-Adjustable responses: Professional, Casual, Luxury, and more.
+✅ Mock Data Pools
 
-🛠 Tech Stack
+Expanded mock lead database
 
-Frontend: React.js (Vite or Create React App)
+Realistic artist engagement scenarios
 
-Styling: Tailwind CSS
+🧠 AI Logic (Simulated)
 
-Icons: Lucide React
+The AI scoring system is based on weighted criteria:
 
-Simulation Engine: Custom JavaScript mimicking GPT-4 and Social Graph API output
+Factor	Weight
+Engagement Volume	40%
+Follower Count	25%
+Platform Influence	20%
+Content Relevance	15%
 
-💻 Setup & Installation
-Prerequisites
+Final Score = Weighted sum of all factors (0–100)
 
-- Node.js (v14.0.0+)
-- npm or yarn
+This allows ranking and prioritization of promotional opportunities.
 
-1. Clone the Repository
-git clone https://github.com/your-username/artist-promotion-assistant.git
-cd artist-promotion-assistant
+🏗️ Technical Architecture
 
-2. Install Dependencies
-npm install lucide-react
-(If you're also using Tailwind: npm install -D tailwindcss postcss autoprefixer)
+Frontend:
 
-3. Run the Application
-npm start
-(OR, if using Vite:)
-npm run dev
+React (Vite-based build)
 
-4. Open in Browser
-Go to:
-http://localhost:3000  (or whichever port appears in your terminal)
+HTML5 / CSS3
+
+JavaScript (ES6)
+
+State Management:
+
+React useState
+
+Component-level data handling
+
+Data Layer:
+
+Local mock lead pools
+
+Static performance analytics datasets
+
+Deployment:
+
+Vercel
 
 📂 Project Structure
+/src
+  ├── App.jsx
+  ├── index.css
+  ├── main.jsx
+/index.html
+/package.json
 
-- /src
-- /src/components — Reusable UI components (MetricCard, PlatformIcon)
-- /src/data — Mock data simulating API responses (MOCK_LEADS_POOL)
-- /src/App.js — Main application logic and state management
-- /src/index.css — Tailwind directives and global styles
+📊 Functional POC Deliverables (Completed)
+Requirement	Status
+Live Monitoring (2+ Platforms)	✅ Completed
+AI Analysis & Opportunity Scoring	✅ Completed
+Approval / Denial Workflow	✅ Completed
+Analytics Dashboard	✅ Completed
+Mock Data Pools	✅ Completed
+Vercel Deployment	✅ Completed
+🚀 How to Run Locally
+npm install
+npm run dev
 
-🛡 Ethical Compliance & Safety
-Data Privacy
+⚠️ Limitations (POC Scope)
 
-This POC processes public data only.
-Production environments would require secure storage (e.g., AWS KMS).
+This system is a Proof of Concept, which means:
 
-Bias Mitigation
+No real API integrations
 
-Opportunity scoring prioritizes explicit keywords rather than demographic characteristics to minimize profiling bias.
+No real AI model training
 
-Platform Compliance
+No real-time data ingestion
 
-Designed to respect API rate limits and includes a simulated Fetch Cooldown mechanism.
+All metrics are mock-generated
+
+Future versions may integrate:
+
+TikTok, Instagram, Spotify, and YouTube APIs
+
+Real-time NLP analysis
+
+Machine learning ranking models
+
+📈 Future Enhancements
+
+Live social media API monitoring
+
+True AI/ML opportunity ranking
+
+Automated artist outreach emails
+
+Campaign ROI prediction
+
+CRM system integration
+
+📜 License
+
+This project is for academic demonstration purposes only.
