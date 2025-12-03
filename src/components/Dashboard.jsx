@@ -1,56 +1,139 @@
 // src/components/Dashboard.jsx
-import React from 'react';
-import { calculateScore } from '../utils/score';
-import { estimateROI } from '../utils/roi';
-import ExportCSVButton from './ExportCSVButton.jsx';
+import React, { useState } from "react";
+import { CheckCircle, XCircle, Edit3, LayoutDashboard, User } from "lucide-react";
+import ExportCSVButton from "./ExportCSVButton";
 
-export default function Dashboard({ leads }) {
-  // Calculate scores and ROI for display
-  const processedLeads = leads.map((lead) => ({
-    ...lead,
-    score: lead.score ?? calculateScore(lead),
-    estimatedROI: lead.estimatedROI ?? estimateROI(lead),
-  }));
+export default function Dashboard({ leads, handleApprove, handleDismiss }) {
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedResponse, setEditedResponse] = useState("");
+
+  const openLead = (lead) => {
+    setSelectedLead(lead);
+    setEditedResponse(lead.aiDraft);
+    setEditMode(false);
+  };
 
   return (
-    <div className="dashboard">
-      <h2>Lead Dashboard</h2>
+    <div className="dashboard-grid">
+      {/* FEED ----------------------------------------------------- */}
+      <div className="feed">
+        <div className="feed-header">
+          <h2>Live Feed</h2>
+          <ExportCSVButton leads={leads} />
+        </div>
 
-      {/* CSV Export Button */}
-      <div style={{ marginBottom: '10px' }}>
-        <ExportCSVButton leads={processedLeads} />
+        <div className="lead-list">
+          {leads.length === 0 && <div className="empty">No leads yet.</div>}
+
+          {leads.map((lead) => (
+            <article
+              key={lead.id}
+              className={`lead-card ${selectedLead?.id === lead.id ? "selected" : ""}`}
+              onClick={() => openLead(lead)}
+            >
+              <div className="lead-head">
+                <div className="lead-meta">
+                  <div className="avatar">{lead.avatar}</div>
+                  <div>
+                    <div className="lead-user">@{lead.user}</div>
+                    <div className="lead-sub muted-sm">
+                      {lead.timestamp} • {lead.platform}
+                    </div>
+                  </div>
+                </div>
+                <div className={`score-badge ${lead.opportunityScore >= 80 ? "badge-green" : lead.opportunityScore >= 50 ? "badge-yellow" : "badge-gray"}`}>
+                  {lead.opportunityScore}
+                </div>
+              </div>
+
+              <p className="lead-content">"{lead.content}"</p>
+
+              <div className="lead-footer muted-sm">
+                <User className="w-3 h-3 inline-block mr-1" />
+                {lead.persona}
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
 
-      <table
-        border="1"
-        cellPadding="8"
-        style={{ marginTop: '10px', borderCollapse: 'collapse', width: '100%' }}
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Platform</th>
-            <th>Score</th>
-            <th>Engagement</th>
-            <th>Reach</th>
-            <th>Estimated ROI</th>
-            <th>Suggested Response</th>
-          </tr>
-        </thead>
-        <tbody>
-          {processedLeads.map((lead) => (
-            <tr key={lead.id}>
-              <td>{lead.user}</td>
-              <td>{lead.platform}</td>
-              <td>{lead.score}</td>
-              <td>{lead.engagement ?? '-'}</td>
-              <td>{lead.reach ?? '-'}</td>
-              <td>${lead.estimatedROI}</td>
-              <td>{lead.aiDraft}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* ACTION PANEL -------------------------------------------- */}
+      <div className="action-panel">
+        {!selectedLead ? (
+          <div className="empty-panel">
+            <LayoutDashboard className="w-16 h-16 muted" />
+            <div className="muted">Select a lead to review AI suggestions</div>
+          </div>
+        ) : (
+          <div className="lead-detail">
+            <div className="detail-head">
+              <div className="avatar-lg">{selectedLead.avatar}</div>
+              <div>
+                <div className="lead-user">@{selectedLead.user}</div>
+                <div className="muted-sm">
+                  {selectedLead.platform} • {selectedLead.persona}
+                </div>
+              </div>
+              <div className="score-large">{selectedLead.opportunityScore}%</div>
+            </div>
+
+            <div className="quote">"{selectedLead.content}"</div>
+
+            {/* Suggested Response */}
+            <div className="suggestion">
+              <div className="suggestion-head">
+                <h4>Suggested Response</h4>
+                {!editMode && (
+                  <button className="link" onClick={() => setEditMode(true)}>
+                    <Edit3 className="w-4 h-4" /> Edit
+                  </button>
+                )}
+              </div>
+
+              {editMode ? (
+                <textarea
+                  value={editedResponse}
+                  onChange={(e) => setEditedResponse(e.target.value)}
+                  className="response-editor"
+                />
+              ) : (
+                <div className="response-box">{editedResponse}</div>
+              )}
+            </div>
+
+            <div className="detail-actions">
+              <button
+                className="btn-outline"
+                onClick={() => {
+                  handleDismiss(selectedLead.id);
+                  setSelectedLead(null);
+                }}
+              >
+                <XCircle /> Dismiss
+              </button>
+
+              <div className="actions-right">
+                {editMode && (
+                  <button className="btn" onClick={() => setEditMode(false)}>
+                    Cancel
+                  </button>
+                )}
+
+                <button
+                  className="btn-primary"
+                  onClick={() => {
+                    handleApprove(selectedLead.id);
+                    setSelectedLead(null);
+                  }}
+                >
+                  <CheckCircle /> {editMode ? "Save & Approve" : "Approve & Post"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
