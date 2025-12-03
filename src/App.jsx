@@ -13,7 +13,6 @@ import {
   User,
   Sparkles,
   TrendingUp,
-  Clock,
   DollarSign,
   History,
   MessageSquare
@@ -25,7 +24,7 @@ import ExportCSVButton from './components/ExportCSVButton';
 import { calculateScore } from './utils/score';
 import { estimateROI } from './utils/roi';
 
-/* ------------------ Mock data ------------------ */
+/* ------------------ Mock Leads ------------------ */
 const MOCK_LEADS_POOL = [
   {
     id: 1,
@@ -100,31 +99,51 @@ const MOCK_LEADS_POOL = [
       "Thank you so much! I’ve participated in several recent exhibitions. I’d be glad to share my portfolio or upcoming availability.",
     timestamp: "22m ago"
   },
-  // Additional mock leads
+  // Add more mock leads if needed
   {
     id: 7,
-    user: "modern_artist",
-    platform: "instagram",
+    user: "modern_art_hunter",
+    platform: "linkedin",
     avatar: "MA",
-    persona: "Art Collector",
-    content: "Do you offer commissions for custom pieces?",
+    persona: "Collector",
+    content: "Looking for contemporary pieces for my gallery.",
     opportunityScore: 88,
     aiDraft:
-      "Absolutely! I’d be thrilled to create a custom piece tailored to your preferences. Want to discuss style and size options?",
-    timestamp: "25m ago"
+      "Excited to connect! I can recommend several contemporary pieces perfect for your gallery. Shall I send a shortlist?",
+    timestamp: "30m ago"
   },
   {
     id: 8,
-    user: "startup_marketer",
-    platform: "linkedin",
-    avatar: "SM",
-    persona: "Brand/Agency Buyer",
-    content: "We need artwork for a tech startup office lobby.",
-    opportunityScore: 81,
+    user: "home_decorator",
+    platform: "instagram",
+    avatar: "HD",
+    persona: "Interior Designer",
+    content: "Need some vibrant artwork for a client’s living room.",
+    opportunityScore: 77,
     aiDraft:
-      "Great! I can suggest modern, inspiring pieces perfect for a tech environment. Shall I curate a shortlist?",
-    timestamp: "30m ago"
+      "I have a few vibrant pieces that could work beautifully. Would you like me to create a curated selection?",
+    timestamp: "35m ago"
   }
+];
+
+/* ------------------ Mock Analytics ------------------ */
+const MOCK_ANALYTICS = {
+  totalLeads: 24,
+  approvedLeads: 15,
+  dismissedLeads: 9,
+  estimatedRevenue: 4820,
+  highValueOpportunities: 10,
+  ctr: 62.5
+};
+
+const MOCK_CHART_DATA = [
+  { day: 'Mon', approved: 2, dismissed: 1 },
+  { day: 'Tue', approved: 3, dismissed: 0 },
+  { day: 'Wed', approved: 1, dismissed: 2 },
+  { day: 'Thu', approved: 4, dismissed: 1 },
+  { day: 'Fri', approved: 5, dismissed: 2 },
+  { day: 'Sat', approved: 0, dismissed: 1 },
+  { day: 'Sun', approved: 0, dismissed: 2 },
 ];
 
 /* ------------------ Small Reusable Components ------------------ */
@@ -141,7 +160,7 @@ const PlatformIcon = ({ platform }) => {
   return <MessageSquare className="w-4 h-4" />;
 };
 
-const MetricCard = ({ title, value, subtext, Icon, trend }) => (
+const MetricCard = ({ title, value, subtext, Icon }) => (
   <div className="card metric-card">
     <div className="icon-wrap">
       <Icon className="w-6 h-6" />
@@ -149,12 +168,7 @@ const MetricCard = ({ title, value, subtext, Icon, trend }) => (
     <div className="card-body">
       <p className="muted">{title}</p>
       <h3 className="metric-value">{value}</h3>
-      {subtext && (
-        <div className="flex gap-2 items-center">
-          <span className="trend">{trend}</span>
-          <span className="muted-sm">{subtext}</span>
-        </div>
-      )}
+      {subtext && <p className="muted-sm">{subtext}</p>}
     </div>
   </div>
 );
@@ -178,7 +192,6 @@ export default function App() {
   const [brandVoice, setBrandVoice] = useState("Professional yet Creative");
   const [autoReplyThreshold] = useState(90);
 
-  // Track approved/dismissed leads for analytics
   const [approvedLeads, setApprovedLeads] = useState([]);
   const [dismissedLeads, setDismissedLeads] = useState([]);
 
@@ -317,36 +330,67 @@ export default function App() {
               <MetricCard
                 Icon={TrendingUp}
                 title="Total Leads Processed"
-                value={approvedLeads.length + dismissedLeads.length}
+                value={MOCK_ANALYTICS.totalLeads}
                 subtext="Approved + Dismissed"
               />
               <MetricCard
                 Icon={DollarSign}
                 title="Estimated Revenue"
-                value={`$${approvedLeads.reduce((sum, l) => sum + l.estimatedROI, 0)}`}
+                value={`$${MOCK_ANALYTICS.estimatedRevenue}`}
                 subtext="From approved leads"
               />
               <MetricCard
                 Icon={CheckCircle}
                 title="Approval Rate"
-                value={`${((approvedLeads.length / (approvedLeads.length + dismissedLeads.length || 1)) * 100).toFixed(1)}%`}
+                value={`${MOCK_ANALYTICS.ctr}%`}
                 subtext="CTR / Leads Approved"
               />
               <MetricCard
                 Icon={LayoutDashboard}
                 title="High-Value Opportunities"
-                value={leads.filter(l => l.opportunityScore >= 80).length}
+                value={MOCK_ANALYTICS.highValueOpportunities}
                 subtext="Score >= 80"
               />
             </div>
 
-            {/* MOCK CHART PLACEHOLDER */}
             <div className="mock-chart">
-              <h3>Lead Score Distribution</h3>
-              <div className="chart-bar" style={{ width: "80%", background: "#4caf50", height: "20px", marginBottom: "8px" }}></div>
-              <div className="chart-bar" style={{ width: "60%", background: "#ff9800", height: "20px", marginBottom: "8px" }}></div>
-              <div className="chart-bar" style={{ width: "40%", background: "#f44336", height: "20px", marginBottom: "8px" }}></div>
-              <div className="muted-sm">Dynamic charts will be added in the future.</div>
+              <h3>Weekly Lead Activity</h3>
+              <table className="chart-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Approved</th>
+                    <th>Dismissed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {MOCK_CHART_DATA.map((d) => (
+                    <tr key={d.day}>
+                      <td>{d.day}</td>
+                      <td>
+                        <div
+                          className="bar approved-bar"
+                          style={{ width: `${d.approved * 15}px` }}
+                        >
+                          {d.approved}
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          className="bar dismissed-bar"
+                          style={{ width: `${d.dismissed * 15}px` }}
+                        >
+                          {d.dismissed}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="legend">
+                <span className="legend-approved"></span> Approved
+                <span className="legend-dismissed"></span> Dismissed
+              </div>
             </div>
           </section>
         )}
