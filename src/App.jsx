@@ -20,10 +20,36 @@ import {
 
 
 // Import your Dashboard component
-// Import your Dashboard component
 import Dashboard from './components/Dashboard';
 
+import ExportCSVButton from './components/ExportCSVButton';  // <-- Import CSV button here
 
+/* ------------------ Mock data or other constants ------------------ */
+const MOCK_LEADS_POOL = [
+  { id: 1, name: 'Alice', platform: 'Instagram', engagement: 80, reach: 500, score: 90, estimatedROI: 1200 },
+  { id: 2, name: 'Bob', platform: 'LinkedIn', engagement: 60, reach: 800, score: 75, estimatedROI: 900 },
+  { id: 3, name: 'Charlie', platform: 'Instagram', engagement: 90, reach: 1200, score: 95, estimatedROI: 1500 },
+];
+
+/* ------------------ App component ------------------ */
+export default function App() {
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [leads, setLeads] = useState(MOCK_LEADS_POOL);
+
+  return (
+    <div>
+      <h1>AI-Powered Artist Promotion Assistant</h1>
+
+      {activeTab === "dashboard" && (
+        <div className="dashboard-controls">
+          <ExportCSVButton leads={leads} />
+        </div>
+      )}
+
+      <Dashboard />
+    </div>
+  );
+}
 
 
 
@@ -472,5 +498,6 @@ export default function App() {
     </div>
   );
 }
+
 
 
