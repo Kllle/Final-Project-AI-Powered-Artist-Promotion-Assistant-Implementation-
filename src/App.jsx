@@ -25,9 +25,6 @@ import ExportCSVButton from './components/ExportCSVButton';
 import { calculateScore } from './utils/score';
 import { estimateROI } from './utils/roi';
 
-// Import Recharts for simple chart
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-
 /* ------------------ Mock data ------------------ */
 const MOCK_LEADS_POOL = [
   {
@@ -38,8 +35,6 @@ const MOCK_LEADS_POOL = [
     persona: "Interior Designer",
     content: "This piece would look amazing in a hotel lobby. Do you ship to NYC?",
     opportunityScore: 92,
-    engagement: 80,
-    reach: 500,
     aiDraft:
       "Thank you so much! Yes — I absolutely ship to NYC. I’d love to help you find the perfect piece for your hotel project. Would you like dimensions, pricing, or alternative color options?",
     timestamp: "2m ago"
@@ -52,8 +47,6 @@ const MOCK_LEADS_POOL = [
     persona: "Corporate Buyer",
     content: "We’re redesigning our workspace and looking for modern artwork.",
     opportunityScore: 86,
-    engagement: 60,
-    reach: 800,
     aiDraft:
       "That sounds exciting! I specialize in modern, space-enhancing pieces. I’d be happy to recommend options based on your office size and aesthetic. Would you like me to send a curated shortlist?",
     timestamp: "5m ago"
@@ -66,8 +59,6 @@ const MOCK_LEADS_POOL = [
     persona: "Art Enthusiast",
     content: "This is beautiful!! Do you have prints available?",
     opportunityScore: 68,
-    engagement: 70,
-    reach: 300,
     aiDraft:
       "Thank you! Yes, I offer high-quality prints in multiple sizes. Would you like me to share available formats and pricing?",
     timestamp: "8m ago"
@@ -80,8 +71,6 @@ const MOCK_LEADS_POOL = [
     persona: "Homeowner",
     content: "I’m remodeling my living room and this piece would fit perfectly!",
     opportunityScore: 75,
-    engagement: 50,
-    reach: 400,
     aiDraft:
       "That means a lot — thank you! If you'd like, I can help match the piece to your room’s new colors and layout. Want to share a photo of the space?",
     timestamp: "12m ago"
@@ -95,8 +84,6 @@ const MOCK_LEADS_POOL = [
     content:
       "We're looking for unique visuals for a brand campaign — do you take commissions?",
     opportunityScore: 83,
-    engagement: 65,
-    reach: 600,
     aiDraft:
       "Yes, absolutely! I regularly partner with agencies for bespoke artwork and campaign visuals. I’d love to learn more about your theme and deliverables.",
     timestamp: "18m ago"
@@ -109,8 +96,6 @@ const MOCK_LEADS_POOL = [
     persona: "Gallery Scout",
     content: "Your style is very unique — have you exhibited recently?",
     opportunityScore: 72,
-    engagement: 55,
-    reach: 350,
     aiDraft:
       "Thank you so much! I’ve participated in several recent exhibitions. I’d be glad to share my portfolio or upcoming availability.",
     timestamp: "22m ago"
@@ -212,17 +197,6 @@ export default function App() {
     return leads.filter(l => l.platform === filter);
   };
 
-  // Analytics Computations
-  const totalLeads = approvedLeads.length + dismissedLeads.length;
-  const estimatedRevenue = approvedLeads.reduce((sum, l) => sum + l.estimatedROI, 0);
-  const approvalRate = ((approvedLeads.length / (totalLeads || 1)) * 100).toFixed(1);
-  const highValueOpportunities = leads.filter(l => l.opportunityScore >= 80).length;
-
-  const leadsPerPlatform = ["instagram", "linkedin"].map(platform => ({
-    platform,
-    count: approvedLeads.filter(l => l.platform === platform).length
-  }));
-
   /* ------------------ Render ------------------ */
   return (
     <div className="app-root">
@@ -318,39 +292,40 @@ export default function App() {
               <MetricCard
                 Icon={TrendingUp}
                 title="Total Leads Processed"
-                value={totalLeads}
+                value={approvedLeads.length + dismissedLeads.length}
                 subtext="Approved + Dismissed"
               />
               <MetricCard
                 Icon={DollarSign}
                 title="Estimated Revenue"
-                value={`$${estimatedRevenue}`}
+                value={`$${approvedLeads.reduce((sum, l) => sum + l.estimatedROI, 0)}`}
                 subtext="From approved leads"
               />
               <MetricCard
                 Icon={CheckCircle}
                 title="Approval Rate"
-                value={`${approvalRate}%`}
-                subtext="Leads Approved"
+                value={`${((approvedLeads.length / (approvedLeads.length + dismissedLeads.length || 1)) * 100).toFixed(1)}%`}
+                subtext="CTR / Leads Approved"
               />
               <MetricCard
                 Icon={LayoutDashboard}
                 title="High-Value Opportunities"
-                value={highValueOpportunities}
+                value={leads.filter(l => l.opportunityScore >= 80).length}
                 subtext="Score >= 80"
               />
             </div>
 
-            {/* Simple Bar Chart */}
-            <div style={{ height: 250, marginTop: "20px" }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={leadsPerPlatform}>
-                  <XAxis dataKey="platform" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#4ade80" />
-                </BarChart>
-              </ResponsiveContainer>
+            {/* Chart Placeholder */}
+            <div style={{
+              height: 250,
+              marginTop: "20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#999",
+              border: "1px dashed #ccc"
+            }}>
+              Chart placeholder
             </div>
           </section>
         )}
