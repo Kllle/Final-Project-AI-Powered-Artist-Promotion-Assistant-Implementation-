@@ -5,7 +5,9 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "lucide-react": "^0.263.1"
+    "lucide-react": "^0.263.1",
+    "file-saver": "^2.0.5"
+
   },
   "devDependencies": {
     "vite": "^5.4.0",
@@ -17,4 +19,5 @@
     "preview": "vite preview"
   }
 }
+
 
