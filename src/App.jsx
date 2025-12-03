@@ -20,19 +20,9 @@ import {
 
 
 // Import your Dashboard component
+// Import your Dashboard component
 import Dashboard from './components/Dashboard';
 
-function App() {
-  return (
-    <div>
-      <h1>AI-Powered Artist Promotion Assistant</h1>
-      {/* Render the dashboard here */}
-      <Dashboard />
-    </div>
-  );
-}
-
-export default App;
 
 
 
@@ -482,4 +472,5 @@ export default function App() {
     </div>
   );
 }
+
 
