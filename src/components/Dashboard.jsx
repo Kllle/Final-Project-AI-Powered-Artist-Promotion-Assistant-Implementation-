@@ -1,21 +1,21 @@
 // src/components/Dashboard.jsx
-import React, { useState } from "react";
-import { CheckCircle, XCircle, Edit3, LayoutDashboard, User } from "lucide-react";
-import ExportCSVButton from "./ExportCSVButton";
+import React from 'react';
+import { Edit3, XCircle, CheckCircle, User, LayoutDashboard } from 'lucide-react';
+import ExportCSVButton from './ExportCSVButton.jsx';
 
-export default function Dashboard({ leads, handleApprove, handleDismiss }) {
-  const [selectedLead, setSelectedLead] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [editedResponse, setEditedResponse] = useState("");
-
-  const openLead = (lead) => {
-    setSelectedLead(lead);
-    setEditedResponse(lead.aiDraft);
-    setEditMode(false);
-  };
-
+export default function Dashboard({
+  leads,
+  openLead,
+  selectedLead,
+  handleApprove,
+  handleDismiss,
+  editMode,
+  setEditMode,
+  editedResponse,
+  setEditedResponse
+}) {
   return (
-    <div className="dashboard-grid">
+    <section className="dashboard-grid">
       {/* FEED ----------------------------------------------------- */}
       <div className="feed">
         <div className="feed-header">
@@ -29,7 +29,7 @@ export default function Dashboard({ leads, handleApprove, handleDismiss }) {
           {leads.map((lead) => (
             <article
               key={lead.id}
-              className={`lead-card ${selectedLead?.id === lead.id ? "selected" : ""}`}
+              className={`lead-card ${selectedLead?.id === lead.id ? 'selected' : ''}`}
               onClick={() => openLead(lead)}
             >
               <div className="lead-head">
@@ -42,7 +42,7 @@ export default function Dashboard({ leads, handleApprove, handleDismiss }) {
                     </div>
                   </div>
                 </div>
-                <div className={`score-badge ${lead.opportunityScore >= 80 ? "badge-green" : lead.opportunityScore >= 50 ? "badge-yellow" : "badge-gray"}`}>
+                <div className={`score-badge ${lead.opportunityScore >= 80 ? 'badge-green' : lead.opportunityScore >= 50 ? 'badge-yellow' : 'badge-gray'}`}>
                   {lead.opportunityScore}
                 </div>
               </div>
@@ -69,12 +69,14 @@ export default function Dashboard({ leads, handleApprove, handleDismiss }) {
           <div className="lead-detail">
             <div className="detail-head">
               <div className="avatar-lg">{selectedLead.avatar}</div>
+
               <div>
                 <div className="lead-user">@{selectedLead.user}</div>
                 <div className="muted-sm">
                   {selectedLead.platform} • {selectedLead.persona}
                 </div>
               </div>
+
               <div className="score-large">{selectedLead.opportunityScore}%</div>
             </div>
 
@@ -105,10 +107,7 @@ export default function Dashboard({ leads, handleApprove, handleDismiss }) {
             <div className="detail-actions">
               <button
                 className="btn-outline"
-                onClick={() => {
-                  handleDismiss(selectedLead.id);
-                  setSelectedLead(null);
-                }}
+                onClick={() => handleDismiss(selectedLead.id)}
               >
                 <XCircle /> Dismiss
               </button>
@@ -122,10 +121,7 @@ export default function Dashboard({ leads, handleApprove, handleDismiss }) {
 
                 <button
                   className="btn-primary"
-                  onClick={() => {
-                    handleApprove(selectedLead.id);
-                    setSelectedLead(null);
-                  }}
+                  onClick={() => handleApprove(selectedLead.id)}
                 >
                   <CheckCircle /> {editMode ? "Save & Approve" : "Approve & Post"}
                 </button>
@@ -134,6 +130,6 @@ export default function Dashboard({ leads, handleApprove, handleDismiss }) {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
