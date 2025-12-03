@@ -315,17 +315,26 @@ export default function App() {
               />
             </div>
 
-            {/* Chart Placeholder */}
-            <div style={{
-              height: 250,
-              marginTop: "20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#999",
-              border: "1px dashed #ccc"
-            }}>
-              Chart placeholder
+            {/* MOCK DYNAMIC CHART */}
+            <div className="mock-chart" style={{ display: "flex", alignItems: "flex-end", height: "200px", gap: "10px", borderBottom: "1px solid #ccc", padding: "10px", marginTop: "20px" }}>
+              {approvedLeads.map((lead, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    width: "30px",
+                    height: `${lead.opportunityScore}%`,
+                    backgroundColor: "#4CAF50",
+                    display: "flex",
+                    alignItems: "flex-end",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontSize: "10px"
+                  }}
+                  title={`@${lead.user}: ${lead.opportunityScore}%`}
+                >
+                  {lead.opportunityScore}%
+                </div>
+              ))}
             </div>
           </section>
         )}
