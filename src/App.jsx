@@ -100,6 +100,42 @@ const MOCK_LEADS_POOL = [
   }
 ];
 
+// Import utility functions
+import { calculateScore } from './utils/score';
+import { estimateROI } from './utils/roi';
+
+export default function App() {
+  const [leads, setLeads] = useState([]);
+
+  // Initialize leads with score & estimated ROI
+  useEffect(() => {
+    const initializedLeads = MOCK_LEADS_POOL.map((lead) => {
+      const score = calculateScore(lead);
+      const estimatedROI = estimateROI({ ...lead, score });
+      return { ...lead, score, estimatedROI, suggestedResponse: '' };
+    });
+    setLeads(initializedLeads);
+  }, []);
+
+  return (
+    <div className="app-root">
+      <h1>AI-Powered Artist Promotion Assistant</h1>
+
+      {/* CSV Export Button */}
+      <div className="dashboard-controls">
+        <ExportCSVButton leads={leads} />
+      </div>
+
+      {/* Dashboard */}
+      <Dashboard leads={leads} />
+    </div>
+  );
+}
+
+
+
+
+
 /* ------------------ Small Reusable Components ------------------ */
 const ScoreBadge = ({ score }) => {
   let cls = "badge-gray";
@@ -462,6 +498,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 
