@@ -19,13 +19,12 @@ import {
   MessageSquare
 } from "lucide-react";
 
-// Import your components & utilities
 import Dashboard from './components/Dashboard';
 import ExportCSVButton from './components/ExportCSVButton';
 import { calculateScore } from './utils/score';
 import { estimateROI } from './utils/roi';
 
-/* ------------------ Mock data ------------------ */
+/* ------------------ Mock Data ------------------ */
 const MOCK_LEADS_POOL = [
   {
     id: 1,
@@ -102,37 +101,7 @@ const MOCK_LEADS_POOL = [
   }
 ];
 
-/* ------------------ Small Reusable Components ------------------ */
-const ScoreBadge = ({ score }) => {
-  let cls = "badge-gray";
-  if (score >= 80) cls = "badge-green";
-  else if (score >= 50) cls = "badge-yellow";
-  return <span className={`score-badge ${cls}`}>{score}</span>;
-};
-
-const PlatformIcon = ({ platform }) => {
-  if (platform === "instagram") return <Instagram className="w-4 h-4" />;
-  if (platform === "linkedin") return <Linkedin className="w-4 h-4" />;
-  return <MessageSquare className="w-4 h-4" />;
-};
-
-const MetricCard = ({ title, value, subtext, Icon, trend }) => (
-  <div className="card metric-card">
-    <div className="icon-wrap">
-      <Icon className="w-6 h-6" />
-    </div>
-    <div className="card-body">
-      <p className="muted">{title}</p>
-      <h3 className="metric-value">{value}</h3>
-      <div className="flex gap-2 items-center">
-        <span className="trend">{trend}</span>
-        <span className="muted-sm">{subtext}</span>
-      </div>
-    </div>
-  </div>
-);
-
-/* ------------------ Main App Component ------------------ */
+/* ------------------ App Component ------------------ */
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [leads, setLeads] = useState(
@@ -142,6 +111,7 @@ export default function App() {
       return { ...lead, score, estimatedROI, suggestedResponse: '' };
     })
   );
+
   const [selectedLead, setSelectedLead] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editedResponse, setEditedResponse] = useState("");
@@ -183,11 +153,41 @@ export default function App() {
     setSelectedLead(null);
   };
 
-  const filtered = () => {
+  const filteredLeads = () => {
     if (filter === "all") return leads;
     if (filter === "high-value") return leads.filter((l) => l.opportunityScore >= 80);
     return leads.filter((l) => l.platform === filter);
   };
+
+  /* ------------------ Small Reusable Components ------------------ */
+  const ScoreBadge = ({ score }) => {
+    let cls = "badge-gray";
+    if (score >= 80) cls = "badge-green";
+    else if (score >= 50) cls = "badge-yellow";
+    return <span className={`score-badge ${cls}`}>{score}</span>;
+  };
+
+  const PlatformIcon = ({ platform }) => {
+    if (platform === "instagram") return <Instagram className="w-4 h-4" />;
+    if (platform === "linkedin") return <Linkedin className="w-4 h-4" />;
+    return <MessageSquare className="w-4 h-4" />;
+  };
+
+  const MetricCard = ({ title, value, subtext, Icon, trend }) => (
+    <div className="card metric-card">
+      <div className="icon-wrap">
+        <Icon className="w-6 h-6" />
+      </div>
+      <div className="card-body">
+        <p className="muted">{title}</p>
+        <h3 className="metric-value">{value}</h3>
+        <div className="flex gap-2 items-center">
+          <span className="trend">{trend}</span>
+          <span className="muted-sm">{subtext}</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="app-root">
@@ -215,21 +215,18 @@ export default function App() {
           >
             <LayoutDashboard className="w-4 h-4" /> Dashboard
           </button>
-
           <button
             className={`nav-btn ${activeTab === "analytics" ? "active" : ""}`}
             onClick={() => setActiveTab("analytics")}
           >
             <BarChart3 className="w-4 h-4" /> Analytics
           </button>
-
           <button
             className={`nav-btn ${activeTab === "history" ? "active" : ""}`}
             onClick={() => setActiveTab("history")}
           >
             <History className="w-4 h-4" /> History
           </button>
-
           <button
             className={`nav-btn ${activeTab === "settings" ? "active" : ""}`}
             onClick={() => setActiveTab("settings")}
@@ -239,7 +236,7 @@ export default function App() {
         </nav>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <main className="main">
         <header className="main-header">
           <div>
@@ -264,12 +261,10 @@ export default function App() {
         {/* DASHBOARD TAB */}
         {activeTab === "dashboard" && (
           <section className="dashboard-grid">
-            {/* CSV EXPORT BUTTON */}
-            <div className="dashboard-controls" style={{ marginBottom: '10px' }}>
-              <ExportCSVButton leads={leads} />
+            <Dashboard leads={filteredLeads()} />
+            <div style={{ marginTop: "10px" }}>
+              <ExportCSVButton leads={filteredLeads()} />
             </div>
-
-            <Dashboard />
           </section>
         )}
 
@@ -316,6 +311,7 @@ export default function App() {
           <section className="settings">
             <div className="settings-card">
               <h2>AI Configuration</h2>
+
               <label className="muted-sm">Brand Voice</label>
               <select
                 value={brandVoice}
