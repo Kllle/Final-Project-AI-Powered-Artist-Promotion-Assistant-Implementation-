@@ -1,17 +1,31 @@
 // src/components/Dashboard.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { calculateScore } from '../utils/score';
 import { estimateROI } from '../utils/roi';
 import { generateResponse } from '../services/aiSimulator';
 import { trackEvent } from '../services/analytics';
 import ExportCSVButton from './ExportCSVButton.jsx';
 
-export default function Dashboard({ leads }) {
+export default function Dashboard({ leads: initialLeads }) {
+  // Local state to allow re-renders when data updates
+  const [leads, setLeads] = useState([]);
+
+  // Initialize leads with score & estimated ROI
+  useEffect(() => {
+    const initializedLeads = initialLeads.map((lead) => {
+      const score = lead.score ?? calculateScore(lead);
+      const estimatedROI = lead.estimatedROI ?? estimateROI({ ...lead, score });
+      return { ...lead, score, estimatedROI, suggestedResponse: '' };
+    });
+    setLeads(initializedLeads);
+  }, [initialLeads]);
+
   const handleGenerateResponse = async (leadId) => {
     const updatedLeads = leads.map((lead) => {
       if (lead.id === leadId) {
         generateResponse(lead, { tone: 'friendly', style: 'concise' }).then((response) => {
           lead.suggestedResponse = response;
+          setLeads([...leads]); // Trigger re-render
         });
       }
       return lead;
@@ -33,6 +47,7 @@ export default function Dashboard({ leads }) {
   return (
     <div>
       <h2>Lead Dashboard</h2>
+
       {/* CSV Export Button */}
       <ExportCSVButton leads={leads} />
 
@@ -52,10 +67,10 @@ export default function Dashboard({ leads }) {
         <tbody>
           {leads.map((lead) => (
             <tr key={lead.id}>
-              <td>{lead.name}</td>
+              <td>{lead.user}</td>
               <td>{lead.platform}</td>
-              <td>{lead.engagement}</td>
-              <td>{lead.reach}</td>
+              <td>{lead.engagement ?? '-'}</td>
+              <td>{lead.reach ?? '-'}</td>
               <td>{lead.score}</td>
               <td>${lead.estimatedROI}</td>
               <td>{lead.suggestedResponse}</td>
