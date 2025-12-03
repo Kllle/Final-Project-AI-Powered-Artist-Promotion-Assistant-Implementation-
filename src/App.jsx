@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState } from "react";
 import {
   LayoutDashboard,
@@ -19,11 +18,13 @@ import {
   MessageSquare
 } from "lucide-react";
 
-// Components
+// Import your components & utilities
 import Dashboard from './components/Dashboard';
 import ExportCSVButton from './components/ExportCSVButton';
+import { calculateScore } from './utils/score';
+import { estimateROI } from './utils/roi';
 
-/* ------------------ Mock Leads Data ------------------ */
+/* ------------------ Mock data ------------------ */
 const MOCK_LEADS_POOL = [
   {
     id: 1,
@@ -100,40 +101,33 @@ const MOCK_LEADS_POOL = [
   }
 ];
 
-// Import utility functions
-import { calculateScore } from './utils/score';
-import { estimateROI } from './utils/roi';
-
+/* ------------------ App component ------------------ */
 export default function App() {
-  const [leads, setLeads] = useState([]);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   // Initialize leads with score & estimated ROI
-  useEffect(() => {
-    const initializedLeads = MOCK_LEADS_POOL.map((lead) => {
+  const [leads, setLeads] = useState(
+    MOCK_LEADS_POOL.map((lead) => {
       const score = calculateScore(lead);
       const estimatedROI = estimateROI({ ...lead, score });
       return { ...lead, score, estimatedROI, suggestedResponse: '' };
-    });
-    setLeads(initializedLeads);
-  }, []);
+    })
+  );
 
   return (
     <div className="app-root">
       <h1>AI-Powered Artist Promotion Assistant</h1>
 
-      {/* CSV Export Button */}
-      <div className="dashboard-controls">
-        <ExportCSVButton leads={leads} />
-      </div>
+      {activeTab === "dashboard" && (
+        <div className="dashboard-controls" style={{ marginBottom: '10px' }}>
+          <ExportCSVButton leads={leads} />
+        </div>
+      )}
 
-      {/* Dashboard */}
-      <Dashboard leads={leads} />
+      <Dashboard />
     </div>
   );
 }
-
-
-
 
 
 /* ------------------ Small Reusable Components ------------------ */
@@ -498,6 +492,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 
