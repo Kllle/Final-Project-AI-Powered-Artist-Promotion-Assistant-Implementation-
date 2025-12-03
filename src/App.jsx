@@ -5,26 +5,18 @@ import {
   BarChart3,
   Settings,
   CheckCircle,
-  XCircle,
-  Edit3,
   RefreshCw,
-  Instagram,
-  Linkedin,
-  User,
   Sparkles,
   TrendingUp,
   DollarSign,
-  History,
-  MessageSquare
+  History
 } from "lucide-react";
 
-// Import your components & utilities
-import Dashboard from './components/Dashboard';
-import ExportCSVButton from './components/ExportCSVButton';
-import { calculateScore } from './utils/score';
-import { estimateROI } from './utils/roi';
+import Dashboard from "./components/Dashboard";
+import { calculateScore } from "./utils/score";
+import { estimateROI } from "./utils/roi";
 
-/* ------------------ Mock Leads ------------------ */
+/* ------------------ MOCK LEADS ------------------ */
 const MOCK_LEADS_POOL = [
   {
     id: 1,
@@ -99,7 +91,7 @@ const MOCK_LEADS_POOL = [
       "Thank you so much! I’ve participated in several recent exhibitions. I’d be glad to share my portfolio or upcoming availability.",
     timestamp: "22m ago"
   },
-  // Add more mock leads if needed
+  // extra mock items
   {
     id: 7,
     user: "modern_art_hunter",
@@ -108,8 +100,7 @@ const MOCK_LEADS_POOL = [
     persona: "Collector",
     content: "Looking for contemporary pieces for my gallery.",
     opportunityScore: 88,
-    aiDraft:
-      "Excited to connect! I can recommend several contemporary pieces perfect for your gallery. Shall I send a shortlist?",
+    aiDraft: "Excited to connect! I can recommend several contemporary pieces perfect for your gallery.",
     timestamp: "30m ago"
   },
   {
@@ -120,50 +111,27 @@ const MOCK_LEADS_POOL = [
     persona: "Interior Designer",
     content: "Need some vibrant artwork for a client’s living room.",
     opportunityScore: 77,
-    aiDraft:
-      "I have a few vibrant pieces that could work beautifully. Would you like me to create a curated selection?",
+    aiDraft: "I have a few vibrant pieces that could work beautifully. Want a curated selection?",
     timestamp: "35m ago"
   }
 ];
 
-/* ------------------ Mock Analytics ------------------ */
-const MOCK_ANALYTICS = {
-  totalLeads: 24,
-  approvedLeads: 15,
-  dismissedLeads: 9,
-  estimatedRevenue: 4820,
-  highValueOpportunities: 10,
-  ctr: 62.5
-};
-
+/* ------------------ MOCK CHART DATA (static for POC) ------------------ */
 const MOCK_CHART_DATA = [
-  { day: 'Mon', approved: 2, dismissed: 1 },
-  { day: 'Tue', approved: 3, dismissed: 0 },
-  { day: 'Wed', approved: 1, dismissed: 2 },
-  { day: 'Thu', approved: 4, dismissed: 1 },
-  { day: 'Fri', approved: 5, dismissed: 2 },
-  { day: 'Sat', approved: 0, dismissed: 1 },
-  { day: 'Sun', approved: 0, dismissed: 2 },
+  { day: "Mon", approved: 2, dismissed: 1 },
+  { day: "Tue", approved: 3, dismissed: 0 },
+  { day: "Wed", approved: 1, dismissed: 2 },
+  { day: "Thu", approved: 4, dismissed: 1 },
+  { day: "Fri", approved: 5, dismissed: 2 },
+  { day: "Sat", approved: 0, dismissed: 1 },
+  { day: "Sun", approved: 0, dismissed: 2 }
 ];
 
 /* ------------------ Small Reusable Components ------------------ */
-const ScoreBadge = ({ score }) => {
-  let cls = "badge-gray";
-  if (score >= 80) cls = "badge-green";
-  else if (score >= 50) cls = "badge-yellow";
-  return <span className={`score-badge ${cls}`}>{score}</span>;
-};
-
-const PlatformIcon = ({ platform }) => {
-  if (platform === "instagram") return <Instagram className="w-4 h-4" />;
-  if (platform === "linkedin") return <Linkedin className="w-4 h-4" />;
-  return <MessageSquare className="w-4 h-4" />;
-};
-
 const MetricCard = ({ title, value, subtext, Icon }) => (
   <div className="card metric-card">
     <div className="icon-wrap">
-      <Icon className="w-6 h-6" />
+      {Icon && <Icon className="w-6 h-6" />}
     </div>
     <div className="card-body">
       <p className="muted">{title}</p>
@@ -173,17 +141,18 @@ const MetricCard = ({ title, value, subtext, Icon }) => (
   </div>
 );
 
-/* ------------------ Main App Component ------------------ */
+/* ------------------ App ------------------ */
 export default function App() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  // initialize leads with score & estimatedROI computed from utils
   const [leads, setLeads] = useState(
     MOCK_LEADS_POOL.map((lead) => {
       const score = calculateScore(lead);
       const estimatedROI = estimateROI({ ...lead, score });
-      return { ...lead, score, estimatedROI, suggestedResponse: '' };
+      return { ...lead, score, estimatedROI, suggestedResponse: "" };
     })
   );
 
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedLead, setSelectedLead] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editedResponse, setEditedResponse] = useState("");
@@ -195,7 +164,6 @@ export default function App() {
   const [approvedLeads, setApprovedLeads] = useState([]);
   const [dismissedLeads, setDismissedLeads] = useState([]);
 
-  /* ------------------ Utility Functions ------------------ */
   const notify = (msg) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 2600);
@@ -204,38 +172,48 @@ export default function App() {
   const fetchNewLead = () => {
     const idx = Math.floor(Math.random() * MOCK_LEADS_POOL.length);
     const newLead = { ...MOCK_LEADS_POOL[idx], id: Date.now(), timestamp: "Just now" };
-    setLeads((prev) => [newLead, ...prev]);
+    // compute score/roi for new item
+    const score = calculateScore(newLead);
+    const estimatedROI = estimateROI({ ...newLead, score });
+    setLeads((prev) => [{ ...newLead, score, estimatedROI, suggestedResponse: "" }, ...prev]);
     notify(`New lead from ${newLead.platform}`);
   };
 
   const openLead = (lead) => {
     setSelectedLead(lead);
-    setEditedResponse(lead.aiDraft);
+    setEditedResponse(lead.aiDraft || "");
     setEditMode(false);
   };
 
   const handleApprove = (id) => {
-    const lead = leads.find(l => l.id === id);
-    setApprovedLeads(prev => [...prev, lead]);
-    setLeads(prev => prev.filter(l => l.id !== id));
+    const lead = leads.find((l) => l.id === id);
+    if (!lead) return;
+    setApprovedLeads((prev) => [...prev, lead]);
+    setLeads((prev) => prev.filter((l) => l.id !== id));
     setSelectedLead(null);
     notify("Approved & queued for posting");
   };
 
   const handleDismiss = (id) => {
-    const lead = leads.find(l => l.id === id);
-    setDismissedLeads(prev => [...prev, lead]);
-    setLeads(prev => prev.filter(l => l.id !== id));
+    const lead = leads.find((l) => l.id === id);
+    if (!lead) return;
+    setDismissedLeads((prev) => [...prev, lead]);
+    setLeads((prev) => prev.filter((l) => l.id !== id));
     setSelectedLead(null);
+    notify("Dismissed");
   };
 
   const filteredLeads = () => {
     if (filter === "all") return leads;
-    if (filter === "high-value") return leads.filter(l => l.opportunityScore >= 80);
-    return leads.filter(l => l.platform === filter);
+    if (filter === "high-value") return leads.filter((l) => l.opportunityScore >= 80);
+    return leads.filter((l) => l.platform === filter);
   };
 
-  /* ------------------ Render ------------------ */
+  /* ------------------ Derived analytics (dynamic from actions) ------------------ */
+  const totalProcessed = approvedLeads.length + dismissedLeads.length;
+  const estimatedRevenue = approvedLeads.reduce((sum, l) => sum + (l.estimatedROI || 500), 0); // fallback per-lead
+  const approvalRate = totalProcessed > 0 ? ((approvedLeads.length / totalProcessed) * 100).toFixed(1) : "0.0";
+
   return (
     <div className="app-root">
       {notification && (
@@ -245,7 +223,7 @@ export default function App() {
         </div>
       )}
 
-      {/* SIDEBAR -------------------------------------------------------- */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="brand">
           <Sparkles className="w-5 h-5" />
@@ -256,37 +234,25 @@ export default function App() {
         </div>
 
         <nav className="nav">
-          <button
-            className={`nav-btn ${activeTab === "dashboard" ? "active" : ""}`}
-            onClick={() => setActiveTab("dashboard")}
-          >
+          <button className={`nav-btn ${activeTab === "dashboard" ? "active" : ""}`} onClick={() => setActiveTab("dashboard")}>
             <LayoutDashboard className="w-4 h-4" /> Dashboard
           </button>
 
-          <button
-            className={`nav-btn ${activeTab === "analytics" ? "active" : ""}`}
-            onClick={() => setActiveTab("analytics")}
-          >
+          <button className={`nav-btn ${activeTab === "analytics" ? "active" : ""}`} onClick={() => setActiveTab("analytics")}>
             <BarChart3 className="w-4 h-4" /> Analytics
           </button>
 
-          <button
-            className={`nav-btn ${activeTab === "history" ? "active" : ""}`}
-            onClick={() => setActiveTab("history")}
-          >
+          <button className={`nav-btn ${activeTab === "history" ? "active" : ""}`} onClick={() => setActiveTab("history")}>
             <History className="w-4 h-4" /> History
           </button>
 
-          <button
-            className={`nav-btn ${activeTab === "settings" ? "active" : ""}`}
-            onClick={() => setActiveTab("settings")}
-          >
+          <button className={`nav-btn ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}>
             <Settings className="w-4 h-4" /> Settings
           </button>
         </nav>
       </aside>
 
-      {/* MAIN ------------------------------------------------------------ */}
+      {/* MAIN */}
       <main className="main">
         <header className="main-header">
           <div>
@@ -307,7 +273,7 @@ export default function App() {
           </div>
         </header>
 
-        {/* DASHBOARD TAB ------------------------------------------------ */}
+        {/* DASHBOARD */}
         {activeTab === "dashboard" && (
           <Dashboard
             leads={filteredLeads()}
@@ -322,80 +288,62 @@ export default function App() {
           />
         )}
 
-        {/* ANALYTICS TAB ------------------------------------------------ */}
+        {/* ANALYTICS */}
         {activeTab === "analytics" && (
           <section className="analytics">
             <h2>Performance Analytics</h2>
+
             <div className="metrics">
-              <MetricCard
-                Icon={TrendingUp}
-                title="Total Leads Processed"
-                value={MOCK_ANALYTICS.totalLeads}
-                subtext="Approved + Dismissed"
-              />
-              <MetricCard
-                Icon={DollarSign}
-                title="Estimated Revenue"
-                value={`$${MOCK_ANALYTICS.estimatedRevenue}`}
-                subtext="From approved leads"
-              />
-              <MetricCard
-                Icon={CheckCircle}
-                title="Approval Rate"
-                value={`${MOCK_ANALYTICS.ctr}%`}
-                subtext="CTR / Leads Approved"
-              />
-              <MetricCard
-                Icon={LayoutDashboard}
-                title="High-Value Opportunities"
-                value={MOCK_ANALYTICS.highValueOpportunities}
-                subtext="Score >= 80"
-              />
+              <MetricCard Icon={TrendingUp} title="Total Leads Processed" value={totalProcessed} subtext="Approved + Dismissed" />
+              <MetricCard Icon={DollarSign} title="Estimated Revenue" value={`$${estimatedRevenue}`} subtext="From approved leads" />
+              <MetricCard Icon={CheckCircle} title="Approval Rate" value={`${approvalRate}%`} subtext="Approved / Processed" />
+              <MetricCard Icon={LayoutDashboard} title="High-Value Opportunities" value={leads.filter(l => l.opportunityScore >= 80).length} subtext="Score >= 80" />
             </div>
 
+            {/* MOCK CHART — horizontal bar rows */}
             <div className="mock-chart">
               <h3>Weekly Lead Activity</h3>
-              <table className="chart-table">
-                <thead>
-                  <tr>
-                    <th>Day</th>
-                    <th>Approved</th>
-                    <th>Dismissed</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {MOCK_CHART_DATA.map((d) => (
-                    <tr key={d.day}>
-                      <td>{d.day}</td>
-                      <td>
-                        <div
-                          className="bar approved-bar"
-                          style={{ width: `${d.approved * 15}px` }}
-                        >
-                          {d.approved}
+
+              <div className="chart-rows">
+                {MOCK_CHART_DATA.map((d) => {
+                  const scale = 18; // px per unit
+                  const approvedWidth = d.approved * scale;
+                  const dismissedWidth = d.dismissed * scale;
+
+                  return (
+                    <div className="chart-row" key={d.day}>
+                      <div className="chart-day">{d.day}</div>
+
+                      <div className="chart-bars-row">
+                        <div className="bar-group">
+                          <div className="bar approved-bar" style={{ width: `${approvedWidth}px` }}>
+                            {d.approved > 0 ? d.approved : ""}
+                          </div>
+                          <div className="bar-label">Approved</div>
                         </div>
-                      </td>
-                      <td>
-                        <div
-                          className="bar dismissed-bar"
-                          style={{ width: `${d.dismissed * 15}px` }}
-                        >
-                          {d.dismissed}
+
+                        <div className="bar-group">
+                          <div className="bar dismissed-bar" style={{ width: `${dismissedWidth}px` }}>
+                            {d.dismissed > 0 ? d.dismissed : ""}
+                          </div>
+                          <div className="bar-label">Dismissed</div>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
               <div className="legend">
-                <span className="legend-approved"></span> Approved
-                <span className="legend-dismissed"></span> Dismissed
+                <div className="legend-item"><span className="legend-approved" /> Approved</div>
+                <div className="legend-item"><span className="legend-dismissed" /> Dismissed</div>
+                <div style={{ marginLeft: "auto", color: "#333", fontWeight: 700 }}>Data is simulated for POC</div>
               </div>
             </div>
           </section>
         )}
 
-        {/* HISTORY TAB -------------------------------------------------- */}
+        {/* HISTORY */}
         {activeTab === "history" && (
           <section className="history">
             <h2>Engagement Log</h2>
@@ -403,31 +351,21 @@ export default function App() {
           </section>
         )}
 
-        {/* SETTINGS TAB ------------------------------------------------- */}
+        {/* SETTINGS */}
         {activeTab === "settings" && (
           <section className="settings">
             <div className="settings-card">
               <h2>AI Configuration</h2>
 
               <label className="muted-sm">Brand Voice</label>
-              <select
-                value={brandVoice}
-                onChange={(e) => setBrandVoice(e.target.value)}
-                className="select"
-              >
+              <select value={brandVoice} onChange={(e) => setBrandVoice(e.target.value)} className="select">
                 <option>Professional yet Creative</option>
                 <option>Casual & Friendly</option>
                 <option>High-End / Luxury</option>
               </select>
 
               <label className="muted-sm">Auto-draft Threshold ({autoReplyThreshold}%)</label>
-              <input
-                type="range"
-                min="50"
-                max="100"
-                defaultValue={autoReplyThreshold}
-                className="range"
-              />
+              <input type="range" min="50" max="100" defaultValue={autoReplyThreshold} className="range" />
             </div>
           </section>
         )}
