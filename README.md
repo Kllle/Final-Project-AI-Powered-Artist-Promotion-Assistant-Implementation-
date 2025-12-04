@@ -12,7 +12,7 @@ Client: Joe Fleishman
 
 # 🔗 Live Demo (Vercel Deployment)
 
-You can view the live Proof of Concept (POC) by clicking the file labeled Live Demo
+You can view the live Proof of Concept (POC) by clicking the file labeled Live Demo Video
 
 This deployed version demonstrates:
 - Mock live platform monitoring
