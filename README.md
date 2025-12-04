@@ -12,9 +12,7 @@ Client: Joe Fleishman
 
 # 🔗 Live Demo (Vercel Deployment)
 
-You can view the live Proof of Concept (POC) application here:
-
-https://final-project-ai-powered-a-git-73c8ee-kaylees-projects-3076c988.vercel.app
+You can view the live Proof of Concept (POC) by clicking the file labeled Live Demo
 
 This deployed version demonstrates:
 - Mock live platform monitoring
